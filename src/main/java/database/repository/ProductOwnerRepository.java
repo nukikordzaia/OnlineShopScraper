@@ -1,8 +1,8 @@
-package repository;
+package database.repository;
 
-import db.Database;
+import database.config.Database;
 import lombok.SneakyThrows;
-import model.ProductOwner;
+import database.model.ProductOwner;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
