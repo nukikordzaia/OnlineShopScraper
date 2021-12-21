@@ -41,11 +41,5 @@ public class Main {
 //		}
 //
 //
-		JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:file:C:/Users/AzRy/Desktop/myMavenProject/db/my-db");
-		dataSource.setUser("sa");
-		dataSource.setPassword("");
-		Connection conn = dataSource.getConnection();
-		System.out.println(conn.isClosed());
 	}
 }
