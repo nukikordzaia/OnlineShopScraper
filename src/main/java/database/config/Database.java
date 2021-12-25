@@ -1,4 +1,4 @@
-package db;
+package database.config;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
