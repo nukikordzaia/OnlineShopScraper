@@ -13,9 +13,10 @@ import java.util.List;
 public class ProductRepository {
 
 	private static final String SELECT_ALL = "SELECT * FROM PRODUCTS";
-	private static final String INSERT = "INSERT INTO PRODUCTS(LINK, BRAND, PROCESSORTYPE, PRICE, RAMSIZE, SSDSIZE)" +
-		" VALUES(?, ?, ?, ?, ?, ?)";
-	private static final String DELETE = "DELETE FROM PRODUCTS WHERE LINK=?;";
+	private static final String INSERT = "INSERT INTO PRODUCTS(PRODUCTID, LINK, TITLE, DESCRIPTION, PRICE)" +
+		" VALUES(?, ?, ?, ?, ?)";
+
+	private static final String DELETE = "DELETE FROM PRODUCTS WHERE PRODUCTID=?;";
 
 	@SneakyThrows
 	public List<Product> getAllProduct() {
@@ -23,13 +24,12 @@ public class ProductRepository {
 			ResultSet resultSet = statement.executeQuery(SELECT_ALL);
 			List<Product> products = new ArrayList<>();
 			while (resultSet.next()) {
+				String productID = resultSet.getString("PRODUCTID");
 				String link = resultSet.getString("LINK");
-				String brand = resultSet.getString("BRAND");
-				String processorType = resultSet.getString("PROCESSORTYPE");
-				int ramSize = resultSet.getInt("RAMSIZE");
-				int ssdSize = resultSet.getInt("SSDSIZE");
-				int price = resultSet.getInt("PRICE");
-				products.add(new Product(link, brand, processorType, ramSize, ssdSize, price));
+				String title = resultSet.getString("TITLE");
+				String description = resultSet.getString("DESCRIPTION");
+				String price = resultSet.getString("PRICE");
+				products.add(new Product(productID, link, title, description, price));
 			}
 			return products;
 		}
@@ -38,12 +38,11 @@ public class ProductRepository {
 	@SneakyThrows
 	public void saveProduct(Product product) {
 		try (PreparedStatement preparedStatement = Database.getInstance().getConn().prepareStatement(INSERT)) {
-			preparedStatement.setString(1, product.getLink());
-			preparedStatement.setString(2, product.getBrand());
-			preparedStatement.setString(3, product.getProcessorType());
-			preparedStatement.setInt(4, product.getPrice());
-			preparedStatement.setInt(5, product.getRamSize());
-			preparedStatement.setInt(6, product.getSsdSize());
+			preparedStatement.setString(1, product.getProductID());
+			preparedStatement.setString(2, product.getLink());
+			preparedStatement.setString(3, product.getTitle());
+			preparedStatement.setString(4, product.getDescription());
+			preparedStatement.setString(5, product.getPrice());
 			preparedStatement.execute();
 		}
 	}
@@ -51,7 +50,7 @@ public class ProductRepository {
 	@SneakyThrows
 	public void deleteProduct(Product product) {
 		try (PreparedStatement preparedStatement = Database.getInstance().getConn().prepareStatement(DELETE)) {
-			preparedStatement.setString(1, product.getLink());
+			preparedStatement.setString(1, product.getProductID());
 			preparedStatement.execute();
 		}
 	}

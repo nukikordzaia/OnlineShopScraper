@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductOwner {
 
+	private String userID;
 	private String username;
-	private int phoneNumber;
+	private String phoneNumber;
 	private String productList;
 }

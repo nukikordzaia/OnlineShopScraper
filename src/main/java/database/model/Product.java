@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Product {
 
+	private String productID;
 	private String link;
-	private String brand;
-	private String processorType;
-	private int ramSize;
-	private int ssdSize;
-	private int price;
+	private String title;
+	private String description;
+	private String price;
 }
