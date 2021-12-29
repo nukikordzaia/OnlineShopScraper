@@ -2,6 +2,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import database.model.Product;
+import database.model.ProductOwner;
+import database.repository.ProductOwnerRepository;
+import database.repository.ProductRepository;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -25,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static void main(String[] args) {
+		ProductRepository productRepository = new ProductRepository();
+		ProductOwnerRepository ownerRepository = new ProductOwnerRepository();
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
@@ -32,9 +38,7 @@ public class Main {
 		String chromeDriverPath = "C:\\Users\\AzRy\\Desktop\\selenium\\web_driver\\chromedriver.exe";
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 		String url = "https://www.mymarket.ge/ka/search/53/Laptop-kompiuterebi/?Attrs=82.86-138.146-3481.3488.3489.3490.3491-171.180&Brands=42&CatID=53&Page=1&PriceTo=1000";
-
 		openTabs(url);
-
 		try {
 			try {
 				URL url2 = new URL("https://api2.mymarket.ge/api/ka/products");
@@ -76,24 +80,9 @@ public class Main {
 					responseContent.append(line);
 				}
 				reader.close();
+
 				JsonObject jsonObject = new JsonParser().parse(String.valueOf(responseContent)).getAsJsonObject();
-				JsonArray  arr = jsonObject.getAsJsonObject("data").getAsJsonArray("Prs");
-//				System.out.println(arr.get(0));
-				for( int i = 0; i<arr.size(); i++) {
-//					System.out.println(arr.get(i).getAsJsonObject().get("product_id").getAsString());
-//					System.out.println(arr.get(i).getAsJsonObject().get("title").getAsString());
-//					System.out.println(arr.get(i).getAsJsonObject().get("descr").getAsString());
-//					System.out.println(arr.get(i).getAsJsonObject().get("price").getAsString());
-//					System.out.println("---------------------------------------------");
-//					System.out.println(arr.get(i).getAsJsonObject().get("user_id").getAsString());
-//					System.out.println(arr.get(i).getAsJsonObject().get("username").getAsString());
-////					System.out.println(arr.get(i).getAsJsonObject().get("price").getAsString());
-//					System.out.println("-------------------------");
-
-
-				}
-
-
+				saveObjectsInDB(jsonObject, productRepository, ownerRepository);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -118,7 +107,7 @@ public class Main {
 	}
 
 	@SneakyThrows
-	public static void getInfoFromTab(WebDriver driver){
+	public static void getInfoFromTab(WebDriver driver) {
 		Thread.sleep(20000);
 		WebElement element = driver.findElement(By.className("show-number"));
 		element.click();
@@ -132,6 +121,23 @@ public class Main {
 		for (String s : tabs) {
 			driver.switchTo().window(s);
 			getInfoFromTab(driver);
+		}
+	}
+
+	private static void saveObjectsInDB(JsonObject jsonObject, ProductRepository productRepository, ProductOwnerRepository ownerRepository) {
+		JsonArray arr = jsonObject.getAsJsonObject("data").getAsJsonArray("Prs");
+		for (int i = 0; i < arr.size(); i++) {
+			String product_id = arr.get(i).getAsJsonObject().get("product_id").getAsString();
+			String title = arr.get(i).getAsJsonObject().get("title").getAsString();
+			String description = arr.get(i).getAsJsonObject().get("descr").getAsString();
+			String price = arr.get(i).getAsJsonObject().get("price").getAsString();
+
+			String user_id = arr.get(i).getAsJsonObject().get("user_id").getAsString();
+			String username = arr.get(i).getAsJsonObject().get("username").getAsString();
+			Product product = new Product(product_id, title, description, price);
+			productRepository.saveProduct(product);
+			ProductOwner productOwner = new ProductOwner(user_id, username, "");
+			ownerRepository.saveProductOwner(productOwner);
 		}
 	}
 }

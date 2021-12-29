@@ -13,10 +13,11 @@ import java.util.List;
 public class ProductRepository {
 
 	private static final String SELECT_ALL = "SELECT * FROM PRODUCTS";
-	private static final String INSERT = "INSERT INTO PRODUCTS(PRODUCTID, TITLE, DESCRIPTION, PRICE)" +
+	private static final String INSERT = "INSERT INTO PRODUCTS(product_id, title, description, price)" +
 		" VALUES(?, ?, ?, ?)";
 
-	private static final String DELETE = "DELETE FROM PRODUCTS WHERE PRODUCTID=?;";
+	private static final String DELETE = "DELETE FROM PRODUCTS WHERE product_id=?;";
+	private static final String DELETE_ALL = "DELETE FROM PRODUCTS;";
 
 	@SneakyThrows
 	public List<Product> getAllProduct() {
@@ -24,10 +25,10 @@ public class ProductRepository {
 			ResultSet resultSet = statement.executeQuery(SELECT_ALL);
 			List<Product> products = new ArrayList<>();
 			while (resultSet.next()) {
-				String productID = resultSet.getString("PRODUCTID");
-				String title = resultSet.getString("TITLE");
-				String description = resultSet.getString("DESCRIPTION");
-				String price = resultSet.getString("PRICE");
+				String productID = resultSet.getString("product_id");
+				String title = resultSet.getString("title");
+				String description = resultSet.getString("description");
+				String price = resultSet.getString("price");
 				products.add(new Product(productID, title, description, price));
 			}
 			return products;
@@ -49,6 +50,13 @@ public class ProductRepository {
 	public void deleteProduct(Product product) {
 		try (PreparedStatement preparedStatement = Database.getInstance().getConn().prepareStatement(DELETE)) {
 			preparedStatement.setString(1, product.getProductID());
+			preparedStatement.execute();
+		}
+	}
+
+	@SneakyThrows
+	public void deleteAllProduct() {
+		try (PreparedStatement preparedStatement = Database.getInstance().getConn().prepareStatement(DELETE_ALL)) {
 			preparedStatement.execute();
 		}
 	}
