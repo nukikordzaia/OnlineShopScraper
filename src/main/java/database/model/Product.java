@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class Product {
 
 	private String productID;
-	private String link;
 	private String title;
 	private String description;
 	private String price;
