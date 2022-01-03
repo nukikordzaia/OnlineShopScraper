@@ -127,17 +127,23 @@ public class Main {
 	private static void saveObjectsInDB(JsonObject jsonObject, ProductRepository productRepository, ProductOwnerRepository ownerRepository) {
 		JsonArray arr = jsonObject.getAsJsonObject("data").getAsJsonArray("Prs");
 		for (int i = 0; i < arr.size(); i++) {
+			String user_id = arr.get(i).getAsJsonObject().get("user_id").getAsString();
+			String username = arr.get(i).getAsJsonObject().get("username").getAsString();
+			ProductOwner productOwner = new ProductOwner(user_id, username, "");
+
+			if (ownerRepository.isProductOwnerUnique(productOwner)) {
+				ownerRepository.saveProductOwner(productOwner);
+			}
+
 			String product_id = arr.get(i).getAsJsonObject().get("product_id").getAsString();
 			String title = arr.get(i).getAsJsonObject().get("title").getAsString();
 			String description = arr.get(i).getAsJsonObject().get("descr").getAsString();
 			String price = arr.get(i).getAsJsonObject().get("price").getAsString();
-
-			String user_id = arr.get(i).getAsJsonObject().get("user_id").getAsString();
-			String username = arr.get(i).getAsJsonObject().get("username").getAsString();
 			Product product = new Product(product_id, title, description, price);
-			productRepository.saveProduct(product);
-			ProductOwner productOwner = new ProductOwner(user_id, username, "");
-			ownerRepository.saveProductOwner(productOwner);
+
+			if (productRepository.isProductUnique(product)) {
+				productRepository.saveProduct(product);
+			}
 		}
 	}
 }
