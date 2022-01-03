@@ -41,67 +41,66 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static void main(String[] args) throws MessagingException {
-//		ProductRepository productRepository = new ProductRepository();
-//		ProductOwnerRepository ownerRepository = new ProductOwnerRepository();
-//		HttpURLConnection connection;
-//		BufferedReader reader;
-//		String line;
-//		StringBuilder responseContent = new StringBuilder();
-//		String chromeDriverPath = "C:\\Users\\AzRy\\Desktop\\selenium\\web_driver\\chromedriver.exe";
-//		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-//		String url = "https://www.mymarket.ge/ka/search/53/Laptop-kompiuterebi/?Attrs=82.86-138.146-3481.3488.3489.3490.3491-171.180&Brands=42&CatID=53&Page=1&PriceTo=1000";
-//		openTabs(url);
-//		try {
-//			try {
-//				URL url2 = new URL("https://api2.mymarket.ge/api/ka/products");
-//				connection = (HttpURLConnection) url2.openConnection();
-//				connection.setRequestMethod("POST");
-//				connection.setDoOutput(true);
-//
-//				Map<String, String> arguments = new HashMap<>();
-//				arguments.put("Attrs", "82.87.86-138.146");
-//				arguments.put("Brands", "42");
-//				arguments.put("CatID", "53");
-//				arguments.put("Limit", "26");
-//				arguments.put("Page", "1");
-//				arguments.put("PriceTo", "1000");
-//				arguments.put("SortID", "1");
-//				StringJoiner sj = new StringJoiner("&");
-//				for (Map.Entry<String, String> entry : arguments.entrySet())
-//					sj.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "="
-//						+ URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
-//				byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
-//				int length = out.length;
-//				connection.setFixedLengthStreamingMode(length);
-//				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-//				connection.connect();
-//				try (OutputStream os = connection.getOutputStream()) {
-//					os.write(out);
-//				}
-//
-//				connection.setConnectTimeout(10000);
-//				connection.setReadTimeout(10000);
-//
-//				int status = connection.getResponseCode();
-//				if (status > 299) {
-//					reader = new BufferedReader((new InputStreamReader(connection.getErrorStream())));
-//				} else {
-//					reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//				}
-//				while ((line = reader.readLine()) != null) {
-//					responseContent.append(line);
-//				}
-//				reader.close();
-//
-//				JsonObject jsonObject = new JsonParser().parse(String.valueOf(responseContent)).getAsJsonObject();
-//				saveObjectsInDB(jsonObject, productRepository, ownerRepository);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		} catch (JsonSyntaxException e) {
-//			e.printStackTrace();
-//		}
-//		MailSender.sendMail("nukikordzaia2000@gmail.com", "subject", "this is msg");
+		ProductRepository productRepository = new ProductRepository();
+		ProductOwnerRepository ownerRepository = new ProductOwnerRepository();
+		HttpURLConnection connection;
+		BufferedReader reader;
+		String line;
+		StringBuilder responseContent = new StringBuilder();
+		String chromeDriverPath = "C:\\Users\\AzRy\\Desktop\\selenium\\web_driver\\chromedriver.exe";
+		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+		String url = "https://www.mymarket.ge/ka/search/53/Laptop-kompiuterebi/?Attrs=82.86-138.146-3481.3488.3489.3490.3491-171.180&Brands=42&CatID=53&Page=1&PriceTo=1000";
+		openTabs(url);
+		try {
+			try {
+				URL url2 = new URL("https://api2.mymarket.ge/api/ka/products");
+				connection = (HttpURLConnection) url2.openConnection();
+				connection.setRequestMethod("POST");
+				connection.setDoOutput(true);
+
+				Map<String, String> arguments = new HashMap<>();
+				arguments.put("Attrs", "82.87.86-138.146");
+				arguments.put("Brands", "42");
+				arguments.put("CatID", "53");
+				arguments.put("Limit", "26");
+				arguments.put("Page", "1");
+				arguments.put("PriceTo", "1000");
+				arguments.put("SortID", "1");
+				StringJoiner sj = new StringJoiner("&");
+				for (Map.Entry<String, String> entry : arguments.entrySet())
+					sj.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "="
+						+ URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+				byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
+				int length = out.length;
+				connection.setFixedLengthStreamingMode(length);
+				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+				connection.connect();
+				try (OutputStream os = connection.getOutputStream()) {
+					os.write(out);
+				}
+
+				connection.setConnectTimeout(10000);
+				connection.setReadTimeout(10000);
+
+				int status = connection.getResponseCode();
+				if (status > 299) {
+					reader = new BufferedReader((new InputStreamReader(connection.getErrorStream())));
+				} else {
+					reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				}
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line);
+				}
+				reader.close();
+
+				JsonObject jsonObject = new JsonParser().parse(String.valueOf(responseContent)).getAsJsonObject();
+				saveObjectsInDB(jsonObject, productRepository, ownerRepository);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (JsonSyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void openTabs(String url) {
