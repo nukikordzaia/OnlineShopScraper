@@ -13,6 +13,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,11 +35,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MessagingException {
 		ProductRepository productRepository = new ProductRepository();
 		ProductOwnerRepository ownerRepository = new ProductOwnerRepository();
 		HttpURLConnection connection;
@@ -90,7 +102,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static void openTabs(String url) {
 		WebDriver driver = new ChromeDriver();
