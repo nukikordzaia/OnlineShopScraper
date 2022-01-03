@@ -57,4 +57,14 @@ public class ProductOwnerRepository {
 			preparedStatement.execute();
 		}
 	}
+
+	@SneakyThrows
+	public boolean isProductOwnerUnique(ProductOwner owner) {
+		for (ProductOwner ownerInDB : getAllOwner()) {
+			if (owner.getUserID().equals(ownerInDB.getUserID())) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

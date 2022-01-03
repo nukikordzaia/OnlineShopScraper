@@ -60,4 +60,14 @@ public class ProductRepository {
 			preparedStatement.execute();
 		}
 	}
+
+	@SneakyThrows
+	public boolean isProductUnique(Product product) {
+		for (Product productInDB : getAllProduct()) {
+			if (product.getProductID().equals(productInDB.getProductID())) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
