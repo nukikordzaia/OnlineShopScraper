@@ -6,24 +6,8 @@ import database.model.Product;
 import database.model.ProductOwner;
 import database.repository.ProductOwnerRepository;
 import database.repository.ProductRepository;
-import lombok.SneakyThrows;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,12 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static void main(String[] args) throws MessagingException {
@@ -47,10 +28,6 @@ public class Main {
 		BufferedReader reader;
 		String line;
 		StringBuilder responseContent = new StringBuilder();
-		String chromeDriverPath = "C:\\Users\\AzRy\\Desktop\\selenium\\web_driver\\chromedriver.exe";
-		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-		String url = "https://www.mymarket.ge/ka/search/53/Laptop-kompiuterebi/?Attrs=82.86-138.146-3481.3488.3489.3490.3491-171.180&Brands=42&CatID=53&Page=1&PriceTo=1000";
-		openTabs(url);
 		try {
 			try {
 				URL url2 = new URL("https://api2.mymarket.ge/api/ka/products");
@@ -103,39 +80,7 @@ public class Main {
 		}
 	}
 
-	public static void openTabs(String url) {
-		WebDriver driver = new ChromeDriver();
-		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-		driver.get(url);
-		WebElement tabs = driver.findElement(By.className("search-content-cards"));
-		int tabsCount = tabs.findElements(By.tagName("a")).size();
-
-		for (int i = 0; i < tabsCount; i++) {
-			String openTabsAgain = Keys.chord(Keys.CONTROL, Keys.ENTER);
-			tabs.findElements(By.tagName("a")).get(i).sendKeys(openTabsAgain);
-		}
-		navigateInTabs(driver);
-	}
-
-	@SneakyThrows
-	public static void getInfoFromTab(WebDriver driver) {
-		Thread.sleep(20000);
-		WebElement element = driver.findElement(By.className("show-number"));
-		element.click();
-		String phoneNumber = driver.findElement(By.className("opened-number")).getText();
-		System.out.println(phoneNumber);
-	}
-
-	public static void navigateInTabs(WebDriver driver) {
-		ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-		tabs.remove(0);
-		for (String s : tabs) {
-			driver.switchTo().window(s);
-			getInfoFromTab(driver);
-		}
-	}
-
-	private static void saveObjectsInDB(JsonObject jsonObject, ProductRepository productRepository, ProductOwnerRepository ownerRepository) {
+	private static void saveObjectsInDB(JsonObject jsonObject, ProductRepository productRepository, ProductOwnerRepository ownerRepository) throws MessagingException {
 		JsonArray arr = jsonObject.getAsJsonObject("data").getAsJsonArray("Prs");
 		for (int i = 0; i < arr.size(); i++) {
 			String user_id = arr.get(i).getAsJsonObject().get("user_id").getAsString();
@@ -150,10 +95,12 @@ public class Main {
 			String title = arr.get(i).getAsJsonObject().get("title").getAsString();
 			String description = arr.get(i).getAsJsonObject().get("descr").getAsString();
 			String price = arr.get(i).getAsJsonObject().get("price").getAsString();
-			Product product = new Product(product_id, title, description, price);
+			String link = "https://www.mymarket.ge/ka/pr/" + product_id;
+			Product product = new Product(product_id, title, description, price, link);
 
 			if (productRepository.isProductUnique(product)) {
 				productRepository.saveProduct(product);
+				MailSender.sendMail("exampleMail", product.getTitle(), product.getLink());
 			}
 		}
 	}
