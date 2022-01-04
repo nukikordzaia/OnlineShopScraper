@@ -13,8 +13,8 @@ import java.util.List;
 public class ProductRepository {
 
 	private static final String SELECT_ALL = "SELECT * FROM PRODUCTS";
-	private static final String INSERT = "INSERT INTO PRODUCTS(product_id, title, description, price)" +
-		" VALUES(?, ?, ?, ?)";
+	private static final String INSERT = "INSERT INTO PRODUCTS(product_id, title, description, price, link)" +
+		" VALUES(?, ?, ?, ?, ?)";
 
 	private static final String DELETE = "DELETE FROM PRODUCTS WHERE product_id=?;";
 	private static final String DELETE_ALL = "DELETE FROM PRODUCTS;";
@@ -29,7 +29,8 @@ public class ProductRepository {
 				String title = resultSet.getString("title");
 				String description = resultSet.getString("description");
 				String price = resultSet.getString("price");
-				products.add(new Product(productID, title, description, price));
+				String link = resultSet.getString("link");
+				products.add(new Product(productID, title, description, price, link));
 			}
 			return products;
 		}
@@ -42,6 +43,7 @@ public class ProductRepository {
 			preparedStatement.setString(2, product.getTitle());
 			preparedStatement.setString(3, product.getDescription());
 			preparedStatement.setString(4, product.getPrice());
+			preparedStatement.setString(5, product.getLink());
 			preparedStatement.execute();
 		}
 	}
