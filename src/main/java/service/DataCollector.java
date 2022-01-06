@@ -28,7 +28,8 @@ public class DataCollector {
 		connection = (HttpURLConnection) url2.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
-		createFilters();
+		createFilters("82.87.86-138.146","42", "53", "26", "1",
+			"1000", "1");
 		connection.setConnectTimeout(10000);
 		connection.setReadTimeout(10000);
 
@@ -46,16 +47,17 @@ public class DataCollector {
 		return new JsonParser().parse(String.valueOf(responseContent)).getAsJsonObject();
 	}
 
-	private static void createFilters() throws IOException {
+	private static void createFilters(String attrs, String brands, String catID, String limit, String page,
+									  String priceTo, String sortID) throws IOException {
 		Map<String, String> arguments = new HashMap<>();
 		//putting filters
-		arguments.put("Attrs", "82.87.86-138.146");
-		arguments.put("Brands", "42");
-		arguments.put("CatID", "53");
-		arguments.put("Limit", "26");
-		arguments.put("Page", "1");
-		arguments.put("PriceTo", "1000");
-		arguments.put("SortID", "1");
+		arguments.put("Attrs", attrs);
+		arguments.put("Brands", brands);
+		arguments.put("CatID", catID);
+		arguments.put("Limit", limit);
+		arguments.put("Page", page);
+		arguments.put("PriceTo", priceTo);
+		arguments.put("SortID", sortID);
 		StringJoiner sj = new StringJoiner("&");
 		for (Map.Entry<String, String> entry : arguments.entrySet())
 			sj.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "="
