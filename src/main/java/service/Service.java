@@ -24,10 +24,11 @@ public class Service {
 
 	private static void saveProduct(JsonArray arr) throws MessagingException {
 		for (JsonElement element : arr) {
-			String product_id = element.getAsJsonObject().get("product_id").getAsString();
-			String title = element.getAsJsonObject().get("title").getAsString();
-			String description = element.getAsJsonObject().get("descr").getAsString();
-			String price = element.getAsJsonObject().get("price").getAsString();
+			JsonObject obj = element.getAsJsonObject();
+			String product_id = obj.get("product_id").getAsString();
+			String title = obj.getAsJsonObject().get("title").getAsString();
+			String description = obj.getAsJsonObject().get("descr").getAsString();
+			String price = obj.getAsJsonObject().get("price").getAsString();
 			String link = "https://www.mymarket.ge/ka/pr/" + product_id;
 			Product product = new Product(product_id, title, description, price, link);
 
