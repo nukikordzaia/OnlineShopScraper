@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -28,8 +27,8 @@ public class DataCollector {
 		connection = (HttpURLConnection) url2.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
-		createFilters("82.87.86-138.146","42", "53", "26", "1",
-			"1000", "1");
+		createConnection(createFilters("82.87.86-138.146", "42", "53", "26", "1",
+			"1000", "1"));
 		connection.setConnectTimeout(10000);
 		connection.setReadTimeout(10000);
 
@@ -47,8 +46,8 @@ public class DataCollector {
 		return new JsonParser().parse(String.valueOf(responseContent)).getAsJsonObject();
 	}
 
-	private static void createFilters(String attrs, String brands, String catID, String limit, String page,
-									  String priceTo, String sortID) throws IOException {
+	public static String createFilters(String attrs, String brands, String catID, String limit, String page,
+									   String priceTo, String sortID) {
 		Map<String, String> arguments = new HashMap<>();
 		//putting filters
 		arguments.put("Attrs", attrs);
@@ -58,17 +57,23 @@ public class DataCollector {
 		arguments.put("Page", page);
 		arguments.put("PriceTo", priceTo);
 		arguments.put("SortID", sortID);
-		StringJoiner sj = new StringJoiner("&");
+		StringJoiner filters = new StringJoiner("&");
 		for (Map.Entry<String, String> entry : arguments.entrySet())
-			sj.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "="
+			filters.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "="
 				+ URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
-		byte[] out = sj.toString().getBytes(StandardCharsets.UTF_8);
+		return filters.toString();
+	}
+
+	private static void createConnection(String filters) throws IOException {
+		byte[] out = filters.getBytes(StandardCharsets.UTF_8);
 		int length = out.length;
 		connection.setFixedLengthStreamingMode(length);
 		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		connection.connect();
 		try (OutputStream os = connection.getOutputStream()) {
 			os.write(out);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
