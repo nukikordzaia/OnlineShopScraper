@@ -16,6 +16,8 @@ import java.util.Properties;
 public class MailSender {
 
 	public static void sendMail(String recipient, String subject, String mailMessage) throws MessagingException {
+		String senderMail = "mail";
+		String senderPassword = "password";
 		Properties prop = new Properties();
 		prop.put("mail.smtp.auth", true);
 		prop.put("mail.smtp.starttls.enable", "true");
@@ -26,12 +28,12 @@ public class MailSender {
 		Session session = Session.getInstance(prop, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("exampleMail", "password");
+				return new PasswordAuthentication(senderMail, senderPassword);
 			}
 		});
 
 		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress("exampleMail"));
+		message.setFrom(new InternetAddress(senderMail));
 		message.setRecipients(
 			Message.RecipientType.TO, InternetAddress.parse(recipient));
 		message.setSubject(subject);
