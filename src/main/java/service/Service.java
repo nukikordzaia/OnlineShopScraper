@@ -23,6 +23,7 @@ public class Service {
 	}
 
 	private static void saveProduct(JsonArray arr) throws MessagingException {
+		String recipient = "exampleMail";
 		for (JsonElement element : arr) {
 			JsonObject obj = element.getAsJsonObject();
 			String product_id = obj.get("product_id").getAsString();
@@ -34,7 +35,7 @@ public class Service {
 
 			if (productRepository.isProductUnique(product)) {
 				productRepository.saveProduct(product);
-				MailSender.sendMail("exampleMail", product.getTitle(), product.getLink());
+				MailSender.sendMail(recipient, product.getTitle(), product.getLink());
 			}
 		}
 	}

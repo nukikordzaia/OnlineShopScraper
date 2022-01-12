@@ -1,13 +1,14 @@
-import com.google.gson.JsonObject;
-import service.DataCollector;
-import service.Service;
+import service.ScheduledTask;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
-	public static void main(String[] args) throws MessagingException, IOException {
-		JsonObject jsonObject = DataCollector.collectData();
-		Service.saveObjectsInDB(jsonObject);
+	public static void main(String[] args) {
+		long period = 1000L * 60L * 60L * 24L;
+		long delay = 0;
+		Timer timer = new Timer();
+		TimerTask parseWebSite = new ScheduledTask();
+		timer.schedule(parseWebSite, delay, period);
 	}
 }
